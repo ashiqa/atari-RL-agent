@@ -80,12 +80,6 @@ assets/           Demo clip and reward plots
 
 ## Running it
 
-Create the environment and install dependencies:
-
-```bash
-conda env create -f environment.yml
-conda activate hw8        # or the env name defined in environment.yml
-```
 
 **Train** from scratch (writes `checkpoint.pth` and reward plots):
 
