@@ -8,21 +8,17 @@ import ale_py
 gym.register_envs(ale_py)
 
 """
-Please read: THE ENVIRONMENT INTERFACE
+THE ENVIRONMENT INTERFACE
 
-In this homework you will use a version of the Pong environment adapted from
-the Arcade Learning Environment (ALE). This Pong environment is built on top
-of Gymnasium, a library and API for reinforcement learning that was originally
-developed by OpenAI and is now open-source.
+A version of the Pong environment adapted from the Arcade Learning
+Environment (ALE), built on top of Gymnasium, a library and API for
+reinforcement learning.
 
 This environment exposes two primary methods for interaction:
 - reset:  Resets the environment and returns the new initial state.
 - step:   Applies an action and returns the next state, a reward, and two
           boolean flags that indicate whether the episode terminated or was
           truncated because it reached the maximum number of steps.
-
-Read the implementation below to understand each function's arguments and
-their return types.
 
 For more information about the underlying libraries, see
 https://gymnasium.farama.org/ and https://ale.farama.org/.

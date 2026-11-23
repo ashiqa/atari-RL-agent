@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 
 def set_seed(seed):
     """
-    DO NOT MODIFY THIS FUNCTION.
     Sets random seeds.
     """
     random.seed(seed)
@@ -17,7 +16,6 @@ def set_seed(seed):
 
 def parse_args():
     """
-    DO NOT MODIFY THIS FUNCTION.
     Parses all command-line arguments and returns them.
 
     Returns:

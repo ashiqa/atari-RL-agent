@@ -13,7 +13,6 @@ class Policy(nn.Module):
     def __init__(self, state_space: int, action_space: int, hidden_dim: int):
         super().__init__()
         # Define policy network architecture
-        # Read the pytorch documentation on nn.Sequential to learn how to use it
         self.network = nn.Sequential(OrderedDict([
 
             # Fill with the necessary layers
@@ -33,7 +32,6 @@ class Value(nn.Module):
     def __init__(self, state_space: int, hidden_dim: int):
         super().__init__()
         # Define policy network architecture
-        # Read the pytorch documentation on nn.Sequential to learn how to use it
         self.network = nn.Sequential(OrderedDict([
 
             # Fill with the necessary layers
@@ -77,15 +75,11 @@ class Agent(nn.Module):
         self.lr = lr
         self.max_training_steps = max_training_steps
 
-        # ====== BEGIN STUDENT SOLUTION ===========================
 
-        # ====== END STUDENT SOLUTION ===========================
         # Initialize policy network (actor)
-        # Refer to the handout for the value of hidden_dim
         self.policy = Policy(state_space, action_space, 256)
         
         # Initialize value network (critic)
-        # Refer to the handout for the value of hidden_dim
         self.value = Value(state_space, 256)
         
         # Initialize optimizers
@@ -101,7 +95,7 @@ class Agent(nn.Module):
         Helper function to get the action the agent will take given the state
         of the environment.
 
-        IMPORTANT: Should only be used when deploying the agent.
+        Should only be used when deploying the agent.
 
         Parameters:
             state (torch.Tensor) : State encoded as tensor.
@@ -109,7 +103,6 @@ class Agent(nn.Module):
         Returns:
             Returns an integer denoting the action the selected action.
         """
-        # HINT: Remember how to stop gradient propagation
         with torch.no_grad():
             # Sample action from the policy
             logits = self.policy.forward(state)
@@ -129,10 +122,7 @@ class Agent(nn.Module):
             next_state_values (torch.Tensor): Estimated value for states at timesteps t+1, t+2, ...
             terminated (torch.Tensor): True for the terminal states in next_states_values
         """
-        # ====== BEGIN STUDENT SOLUTION ===========================
 
-        # ====== END STUDENT SOLUTION ===========================
-        # TODO: Calculate the N-Step-Returns
         t = rewards.shape[1]
         n = min(n, t)
         gamma_vec = (self.gamma ** torch.arange(t)).reshape(1, -1, 1)
@@ -148,8 +138,6 @@ class Agent(nn.Module):
         shifted_val = shifted_val * (~shifted_term)
         bootstrap = (self.gamma ** n) * shifted_val
 
-        # Hint: Use torch.Tensor.cumsum, torch.nn.functional.pad and self.cum_gamma for efficient implementation
-        # IMPORTANT: Read the pytorch documentation for these functions carefully, especially for torch.nn.functional.pad
         return reward_sum + bootstrap
 
     def value_loss(
@@ -168,12 +156,7 @@ class Agent(nn.Module):
             next_states   (torch.Tensor): States at timesteps t+1, t+2, ...
             terminated    (torch.Tensor): True for the terminal states in next_states
         """
-        # ====== BEGIN STUDENT SOLUTION ===========================
 
-        # ====== END STUDENT SOLUTION ===========================
-        # TODO: Calculate the loss for the value network (critic)
-        # Hint: Remember how to stop gradient propagation for the target calculation
-        # Refer to the handout for the value of n
         with torch.no_grad():
             next_state_values = self.value(next_states)
             returns = self.n_step_returns(10, rewards, next_state_values, terminated)
@@ -185,9 +168,7 @@ class Agent(nn.Module):
         Updates the parameters of the value network (critic) by performing
         a step of gradient descent and sets all gradients to zero.
         """
-        # ====== BEGIN STUDENT SOLUTION ===========================
 
-        # ====== END STUDENT SOLUTION ===========================
         # Use the value optimizer to update the parameters
         # Use the value optimizer to set all the gradients to zero
         self.value_optimizer.step()
@@ -211,12 +192,7 @@ class Agent(nn.Module):
             next_states   (torch.Tensor): States at timesteps t+1, t+2, ...
             terminated    (torch.Tensor): True for the terminal states in next_states
         """
-        # ====== BEGIN STUDENT SOLUTION ===========================
 
-        # ====== END STUDENT SOLUTION ===========================
-        # TODO: Calculate the loss for the policy network (actor)
-        # Hint: Remember how to stop gradient propagation for the target calculation
-        # Refer to the handout for the value of n
         with torch.no_grad():
             next_state_values = self.value(next_states)
             returns = self.n_step_returns(10, rewards, next_state_values, terminated)
@@ -232,9 +208,7 @@ class Agent(nn.Module):
         Updates the parameters of the policy network (actor) by performing
         a step of gradient descent and sets all gradients to zero.
         """
-        # ====== BEGIN STUDENT SOLUTION ===========================
 
-        # ====== END STUDENT SOLUTION ===========================
         # Use the policy optimizer to update the parameters
         # Use the policy optimizer to set all the gradients to zero
         self.policy_optimizer.step()
@@ -269,9 +243,7 @@ def deploy_agent(
         new_state   (torch.FloatTensor) : New states after each action with shape (N, T, S)
         terminated  (torch.BoolTensor)  : Whether the new state is a terminal state (N, T, 1)
     """
-    # ====== BEGIN STUDENT SOLUTION ===========================
 
-    # ====== END STUDENT SOLUTION ===========================
     # Reset the environment 
     state = env.reset()
 
@@ -304,7 +276,7 @@ def deploy_agent(
         if truncated or terminated:
             done = True
 
-    # IMPORTANT: Check the shapes and data types for the return values in the docstring  
+    # Stack trajectory into batched tensors matching the documented shapes
     states = torch.stack(states_list).unsqueeze(0)
     new_states = torch.stack(new_states_list).unsqueeze(0)
     actions = torch.tensor(actions_list, dtype=torch.int64).reshape(1, -1, 1)
@@ -318,23 +290,19 @@ def main():
     args = parse_args()
 
     if args.eval_only == False:
-        set_seed(10301) # DON'T DELETE THIS
+        set_seed(10301)
 
-        # ====== BEGIN STUDENT SOLUTION ===========================
 
-        # ====== END STUDENT SOLUTION ===========================
         # Initialize environment
         env = PongEnviroment(max_steps=args.max_steps)
 
-        # Set random seed (DON'T DELETE THIS)
+        # Set the random seed for reproducibility
         env.reset(seed=10301)
 
         state_size = sum(env.observation_space.shape)
         action_size = int(env.action_space.n)
 
-        # ====== BEGIN STUDENT SOLUTION ===========================
 
-        # ====== END STUDENT SOLUTION ===========================
         # Initialize agent
         agent = Agent(state_size, action_size, args.gamma, args.lr, args.max_steps)
 
@@ -345,9 +313,7 @@ def main():
             range(args.train_episodes), "Training episodes", leave=False
         ):
             # ============ Training ===========
-            # ====== BEGIN STUDENT SOLUTION ===========================
 
-            # ====== END STUDENT SOLUTION ===========================
             # Deploy the current policy to get a new trajectory
             states, actions, rewards, new_states, terminated = deploy_agent(agent, env)
 
@@ -355,11 +321,8 @@ def main():
             train_mean_return = rewards.sum().item()
             train_rewards_list.append(train_mean_return)
 
-            # ====== BEGIN STUDENT SOLUTION ===========================
 
-            # ====== END STUDENT SOLUTION ===========================
             # Calculate the loss for the policy and value
-            # Hint: Check the agent's methods
             value_loss = agent.value_loss(states, rewards, new_states, terminated)
             policy_loss = agent.policy_loss(states, actions, rewards, new_states, terminated)
 
@@ -370,9 +333,7 @@ def main():
             policy_loss.backward()
 
             if (episode + 1) % args.batch_size == 0:
-                # ====== BEGIN STUDENT SOLUTION ===========================
 
-                # ====== END STUDENT SOLUTION ===========================
                 # Update the policy and value functions
                 agent.update_policy()
                 agent.update_value()
@@ -381,9 +342,7 @@ def main():
             if (episode + 1) % args.eval_every == 0:
                 eval_mean_undiscounted_return = 0
                 for eval_episode in range(args.eval_episodes):
-                    # ====== BEGIN STUDENT SOLUTION ===========================
 
-                    # ====== END STUDENT SOLUTION ===========================
                     # Deplay the agent
                     states, actions, rewards, new_states, terminated = deploy_agent(agent, env)
 
@@ -408,18 +367,14 @@ def main():
         plot_evaluation_rewards(eval_rewards_array, args.eval_every)
 
     else:
-        # ====== BEGIN STUDENT SOLUTION ===========================
 
-        # ====== END STUDENT SOLUTION ===========================
         # Initialize environment with record = True
         env = PongEnviroment(max_steps=args.max_steps, record=True)
 
         state_size = sum(env.observation_space.shape)
         action_size = int(env.action_space.n)
 
-        # ====== BEGIN STUDENT SOLUTION ===========================
 
-        # ====== END STUDENT SOLUTION ===========================
         # Initialize agent
         agent = Agent(state_size, action_size, args.gamma, args.lr, args.max_steps)
 
@@ -431,9 +386,7 @@ def main():
         trajectory_indices = torch.arange(0, N)
         rewards_list = []
         for i in range(N):
-            # ====== BEGIN STUDENT SOLUTION ===========================
 
-            # ====== END STUDENT SOLUTION ===========================
             # Deploy the agent to get a trajectory
             states, actions, rewards, new_states, terminated = deploy_agent(agent, env)
             rewards_list.append(rewards)

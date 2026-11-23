@@ -1,11 +1,8 @@
-# HW8 (Reinforcement Learning) -- the environment for this assignment only.
+# Conda environment for the Atari Pong A2C agent.
 #
 #     conda env create -f environment.yml
-#     conda activate 601-hw8
-#
-# Keep the earlier assignments' environments; do not delete them to make room.
-# See ../README.md for why.
-name: 601-hw8
+#     conda activate atari-rl-agent
+name: atari-rl-agent
 dependencies:
   - python=3.12.*
   - pip
@@ -16,6 +13,4 @@ dependencies:
       - ale_py
       - tqdm
       - matplotlib
-      - phigrade>=3.7.0,<4
-      - pytest
       - moviepy
