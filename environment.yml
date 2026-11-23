@@ -1,0 +1,21 @@
+# HW8 (Reinforcement Learning) -- the environment for this assignment only.
+#
+#     conda env create -f environment.yml
+#     conda activate 601-hw8
+#
+# Keep the earlier assignments' environments; do not delete them to make room.
+# See ../README.md for why.
+name: 601-hw8
+dependencies:
+  - python=3.12.*
+  - pip
+  - pip:
+      - torch==2.9.1
+      - numpy
+      - gymnasium
+      - ale_py
+      - tqdm
+      - matplotlib
+      - phigrade>=3.7.0,<4
+      - pytest
+      - moviepy
